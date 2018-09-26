@@ -3,16 +3,15 @@
         <div class="table-border">
             <div class="table">
               <template v-for="(it, x) in 8">
-                <div v-for="(it, y) in 8" :key="x + '-' + y" :class="'cell '+ cellColor(x, y)" :coord="'' + x + y" :row="x" :column="y">
+                <div ref="cells" v-for="(it, y) in 8" :key="x + '-' + y" :class="'cell '+ cellColor(x, y)" :coord="'' + x + y" :row="x" :column="y">
                   <div class="stamp-parent">
-                  
-                    <span ref="stamp" v-if="x==5 || x==6 || x==1 || x==2" 
-                          
-                          :class="'stamp' + (x==5 || x==6 ? '1' : '2' )"
-                          
-                          :coord="'' + x + y"
-                          v-on:click="focusStamp"
-                          ></span>
+                    
+                    <!-- <stamp :id="this.stampId(player)" 
+                           :player="player"
+                           :isSelected="false" 
+                           
+                           ></stamp> -->
+
                   </div>
                 </div>
               </template>
@@ -22,16 +21,49 @@
 </template>
 
 <script>
+let stampP1Counter = 1;
+let stampP2Counter = 1;
+
+import Vue from 'vue'
+import Stamp from "./Stamp";
+
 export default {
   data() {
     return {
+      Stamp,
+      selectedStamp: undefined
     };
   },
-  mounted(){
-    this.counter1=0
+  mounted() {
+    console.log("asdf");
+    for (let x = 0; x < 8; x++) {
+      for (let y = 0; y < 8; y++) {
+        if (x == 1 || x == 2 || x == 5 || x == 6) {
+          let player = x == 5 || x == 6 ? 1 : 2;
+
+          let StampCompClass = Vue.extend(Stamp);
+
+          let _stamp = new StampCompClass();
+
+          _stamp.props = {
+            id: this.stampId(player),
+            player,
+            isSelected: false
+          };
+
+          _stamp.$mount();
+
+          //console.log(this.$refs.cells[x * 8 + y].children[0]);
+
+          this.$refs.cells[x * 8 + y].children[0].appendChild(_stamp.$el);
+
+          //console.log(this.$refs.cells[x * 8 + y]);
+        }
+      }
+    }
   },
   methods: {
-     cellColor(x, y) {
+    cellColor(x, y) {
       return x % 2 == 0
         ? y % 2 == 0 ? "black" : "white"
         : y % 2 == 1 ? "black" : "white";
@@ -43,12 +75,10 @@ export default {
       console.log(event.target);
     },
 
-    stampId(x, y) {
-      console.log(this.p1StampCount++)
-
-      return (x == 5 || x == 6)
-        ? "p1-st-" + this.p1StampCount++
-        : "p2-st-" + this.p2StampCount++;
+    stampId(player) {
+      return player == 1
+        ? "p1-stamp-" + stampP1Counter++
+        : "p1-stamp-" + stampP2Counter++;
     }
   }
 };
@@ -98,7 +128,7 @@ export default {
   display: block;
   padding-bottom: 94%;
 }
-.stamp2 {
+.p1stamp {
   position: absolute;
   width: 70%;
   height: 70%;
@@ -115,7 +145,7 @@ export default {
     #929292 90%
   ) !important;
 }
-.stamp1 {
+.p2stamp {
   position: absolute;
   width: 70%;
   height: 70%;
