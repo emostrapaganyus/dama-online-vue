@@ -1,8 +1,8 @@
 <template>                  
-    <span ref="stamp"  
-        :class="[ this.props.isSelected ? 'active':'', `p${this.props.player}stamp`]"
+    <span  
+        :class="[ isSelected ? 'active':'', `p${this.props.player}stamp`]"
         :id="this.props.id"
-        @click="this._isSelected = !this._isSelected"
+        @click="$emit('clicked', $event)"
     ></span>
 </template>
 
@@ -16,12 +16,13 @@ export default {
       default: false
     }
   },
-  
-  data() {
-    return {
-      _isSelected: this.isSelected
-    };
+  data: function() {
+    return {};
   },
+  mounted() {
+    // console.log(this.$parent);
+    
+  }
 };
 </script>
 

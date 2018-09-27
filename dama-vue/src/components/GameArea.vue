@@ -24,18 +24,18 @@
 let stampP1Counter = 1;
 let stampP2Counter = 1;
 
-import Vue from 'vue'
+import Vue from "vue";
 import Stamp from "./Stamp";
 
 export default {
   data() {
     return {
       Stamp,
-      selectedStamp: undefined
+      selectedStamp: null
     };
   },
   mounted() {
-    console.log("asdf");
+    let thisComp = this;
     for (let x = 0; x < 8; x++) {
       for (let y = 0; y < 8; y++) {
         if (x == 1 || x == 2 || x == 5 || x == 6) {
@@ -45,11 +45,21 @@ export default {
 
           let _stamp = new StampCompClass();
 
+          _stamp.$parent = thisComp;
+
+// console.log(_stamp);
+
           _stamp.props = {
             id: this.stampId(player),
             player,
             isSelected: false
           };
+
+          _stamp.ref="stamp";
+
+          _stamp.$on("clicked", function(e) {
+            thisComp.focusStamp(_stamp, event);
+          });
 
           _stamp.$mount();
 
@@ -69,9 +79,9 @@ export default {
         : y % 2 == 1 ? "black" : "white";
     },
 
-    focusStamp(event) {
-      // console.log(x + "  " + y);
-
+    focusStamp(_stamp, event) {
+      _stamp.isSelected = true;
+      this.selectedStamp = _stamp;
       console.log(event.target);
     },
 
@@ -161,5 +171,8 @@ export default {
     #901d1d 68%,
     #929292 90%
   ) !important;
+}
+.stamp.active {
+  background: green !important;
 }
 </style>
