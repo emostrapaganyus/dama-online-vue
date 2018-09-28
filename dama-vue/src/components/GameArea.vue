@@ -6,12 +6,11 @@
                 <div ref="cells" v-for="(it, y) in 8" :key="x + '-' + y" :class="'cell '+ cellColor(x, y)" :coord="'' + x + y" :row="x" :column="y">
                   <div class="stamp-parent">
                     
-                    <!-- <stamp :id="this.stampId(player)" 
-                           :player="player"
-                           :isSelected="false" 
-                           
-                           ></stamp> -->
-
+                    <span :ref="'stamp' + (x == 5 || x == 6 ? 1 : 2)" v-if="(x == 1 || x == 2 || x == 5 || x == 6)"
+                      :class="[ selectedStampId == stampId(x == 5 || x == 6 ? 1 : 2) ? 'active':'', `p${x == 5 || x == 6 ? 1 : 2}stamp`, 'stamp']"
+                      :id="stampId(x == 5 || x == 6 ? 1 : 2)"
+                      @click="focusStamp"
+                  ></span>
                   </div>
                 </div>
               </template>
@@ -25,16 +24,16 @@ let stampP1Counter = 1;
 let stampP2Counter = 1;
 
 import Vue from "vue";
-import Stamp from "./Stamp";
+// import Stamp from "./Stamp";
 
 export default {
   data() {
     return {
-      Stamp,
-      selectedStamp: null
+      // Stamp,
+      selectedStampId: null
     };
   },
-  mounted() {
+  /*mounted() {
     let thisComp = this;
     for (let x = 0; x < 8; x++) {
       for (let y = 0; y < 8; y++) {
@@ -47,7 +46,7 @@ export default {
 
           _stamp.$parent = thisComp;
 
-// console.log(_stamp);
+          // console.log(_stamp);
 
           _stamp.props = {
             id: this.stampId(player),
@@ -55,7 +54,7 @@ export default {
             isSelected: false
           };
 
-          _stamp.ref="stamp";
+          _stamp.ref = "stamp";
 
           _stamp.$on("clicked", function(e) {
             thisComp.focusStamp(_stamp, event);
@@ -71,7 +70,7 @@ export default {
         }
       }
     }
-  },
+  },*/
   methods: {
     cellColor(x, y) {
       return x % 2 == 0
@@ -79,16 +78,15 @@ export default {
         : y % 2 == 1 ? "black" : "white";
     },
 
-    focusStamp(_stamp, event) {
-      _stamp.isSelected = true;
-      this.selectedStamp = _stamp;
-      console.log(event.target);
+    focusStamp(e) {
+      console.log(e.target);
+      this.selectedStampId = e.target.id;
     },
 
     stampId(player) {
       return player == 1
         ? "p1-stamp-" + stampP1Counter++
-        : "p1-stamp-" + stampP2Counter++;
+        : "p2-stamp-" + stampP2Counter++;
     }
   }
 };
@@ -173,6 +171,6 @@ export default {
   ) !important;
 }
 .stamp.active {
-  background: green !important;
+      box-shadow: 0px 0px 20px 8px #003b67;
 }
 </style>
